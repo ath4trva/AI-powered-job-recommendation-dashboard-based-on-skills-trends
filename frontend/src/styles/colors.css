@@ -1,0 +1,64 @@
+/* LinkedIn Light Mode Color Palette */
+:root {
+  --color-primary: #0A66C2;
+  --color-primary-dark: #004182;
+  --color-primary-light: #0B63BB;
+  --color-primary-lighter: #E7F1FF;
+  --color-background: #F3F2EF;
+  --color-surface: #FFFFFF;
+  --color-text-primary: #000000;
+  --color-text-secondary: #666666;
+  --color-border: #D3D3D3;
+  --color-success: #31A24C;
+  --color-warning: #F4A301;
+  --color-error: #D92E24;
+}
+
+/* Utility classes using the color palette */
+.bg-primary-dark {
+  background-color: var(--color-primary-dark);
+}
+
+.bg-primary {
+  background-color: var(--color-primary);
+}
+
+.bg-primary-light {
+  background-color: var(--color-primary-light);
+}
+
+.bg-primary-lighter {
+  background-color: var(--color-primary-lighter);
+}
+
+.text-primary-dark {
+  color: var(--color-primary-dark);
+}
+
+.text-primary {
+  color: var(--color-primary);
+}
+
+.text-primary-light {
+  color: var(--color-primary-light);
+}
+
+.text-primary-lighter {
+  color: var(--color-primary-lighter);
+}
+
+.border-primary-dark {
+  border-color: var(--color-primary-dark);
+}
+
+.border-primary {
+  border-color: var(--color-primary);
+}
+
+.border-primary-light {
+  border-color: var(--color-primary-light);
+}
+
+.border-primary-lighter {
+  border-color: var(--color-primary-lighter);
+}
