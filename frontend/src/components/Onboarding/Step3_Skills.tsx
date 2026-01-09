@@ -8,62 +8,63 @@ interface Step3SkillsProps {
   onBack: () => void;
 }
 
-const AVAILABLE_SKILLS: Skill[] = [
+// 1. Extended the data structure to include specific 'emoji' for every skill
+const AVAILABLE_SKILLS: (Skill & { emoji: string })[] = [
   // Frontend Skills
-  { id: "react", name: "React", category: "frontend" },
-  { id: "vue", name: "Vue.js", category: "frontend" },
-  { id: "angular", name: "Angular", category: "frontend" },
-  { id: "typescript", name: "TypeScript", category: "frontend" },
-  { id: "tailwind", name: "Tailwind CSS", category: "frontend" },
-  { id: "nextjs", name: "Next.js", category: "frontend" },
+  { id: "react", name: "React", category: "frontend", emoji: "⚛️" },
+  { id: "vue", name: "Vue.js", category: "frontend", emoji: "💚" },
+  { id: "angular", name: "Angular", category: "frontend", emoji: "🅰️" },
+  { id: "typescript", name: "TypeScript", category: "frontend", emoji: "📘" },
+  { id: "tailwind", name: "Tailwind CSS", category: "frontend", emoji: "🌬️" },
+  { id: "nextjs", name: "Next.js", category: "frontend", emoji: "⬛" },
 
   // Backend Skills
-  { id: "nodejs", name: "Node.js", category: "backend" },
-  { id: "python", name: "Python", category: "backend" },
-  { id: "java", name: "Java", category: "backend" },
-  { id: "golang", name: "Go", category: "backend" },
-  { id: "dotnet", name: ".NET", category: "backend" },
-  { id: "php", name: "PHP", category: "backend" },
+  { id: "nodejs", name: "Node.js", category: "backend", emoji: "🟢" },
+  { id: "python", name: "Python", category: "backend", emoji: "🐍" },
+  { id: "java", name: "Java", category: "backend", emoji: "☕" },
+  { id: "golang", name: "Go", category: "backend", emoji: "🐹" },
+  { id: "dotnet", name: ".NET", category: "backend", emoji: "🟣" },
+  { id: "php", name: "PHP", category: "backend", emoji: "🐘" },
 
   // Full Stack
-  { id: "javascript", name: "JavaScript", category: "fullstack" },
-  { id: "express", name: "Express.js", category: "fullstack" },
-  { id: "fastapi", name: "FastAPI", category: "fullstack" },
-  { id: "django", name: "Django", category: "fullstack" },
+  { id: "javascript", name: "JavaScript", category: "fullstack", emoji: "💛" },
+  { id: "express", name: "Express.js", category: "fullstack", emoji: "🚂" },
+  { id: "fastapi", name: "FastAPI", category: "fullstack", emoji: "⚡" },
+  { id: "django", name: "Django", category: "fullstack", emoji: "⛓️" },
 
   // DevOps & Cloud
-  { id: "docker", name: "Docker", category: "devops" },
-  { id: "kubernetes", name: "Kubernetes", category: "devops" },
-  { id: "aws", name: "AWS", category: "devops" },
-  { id: "gcp", name: "Google Cloud", category: "devops" },
-  { id: "azure", name: "Azure", category: "devops" },
-  { id: "ci-cd", name: "CI/CD", category: "devops" },
+  { id: "docker", name: "Docker", category: "devops", emoji: "🐳" },
+  { id: "kubernetes", name: "Kubernetes", category: "devops", emoji: "☸️" },
+  { id: "aws", name: "AWS", category: "devops", emoji: "☁️" },
+  { id: "gcp", name: "Google Cloud", category: "devops", emoji: "🌈" },
+  { id: "azure", name: "Azure", category: "devops", emoji: "💠" },
+  { id: "ci-cd", name: "CI/CD", category: "devops", emoji: "🔄" },
 
   // Data & Analytics
-  { id: "sql", name: "SQL", category: "data" },
-  { id: "postgresql", name: "PostgreSQL", category: "data" },
-  { id: "mongodb", name: "MongoDB", category: "data" },
-  { id: "spark", name: "Apache Spark", category: "data" },
-  { id: "airflow", name: "Apache Airflow", category: "data" },
-  { id: "snowflake", name: "Snowflake", category: "data" },
+  { id: "sql", name: "SQL", category: "data", emoji: "🗃️" },
+  { id: "postgresql", name: "PostgreSQL", category: "data", emoji: "🐘" },
+  { id: "mongodb", name: "MongoDB", category: "data", emoji: "🍃" },
+  { id: "spark", name: "Apache Spark", category: "data", emoji: "✨" },
+  { id: "airflow", name: "Apache Airflow", category: "data", emoji: "🌬️" },
+  { id: "snowflake", name: "Snowflake", category: "data", emoji: "❄️" },
 
   // AI/ML
-  { id: "tensorflow", name: "TensorFlow", category: "ai" },
-  { id: "pytorch", name: "PyTorch", category: "ai" },
-  { id: "scikit", name: "Scikit-learn", category: "ai" },
-  { id: "nlp", name: "NLP", category: "ai" },
-  { id: "cv", name: "Computer Vision", category: "ai" },
+  { id: "tensorflow", name: "TensorFlow", category: "ai", emoji: "🧠" },
+  { id: "pytorch", name: "PyTorch", category: "ai", emoji: "🔥" },
+  { id: "scikit", name: "Scikit-learn", category: "ai", emoji: "🔬" },
+  { id: "nlp", name: "NLP", category: "ai", emoji: "🗣️" },
+  { id: "cv", name: "Computer Vision", category: "ai", emoji: "👁️" },
 
   // Design
-  { id: "figma", name: "Figma", category: "design" },
-  { id: "ux", name: "UX Design", category: "design" },
-  { id: "ui", name: "UI Design", category: "design" },
+  { id: "figma", name: "Figma", category: "design", emoji: "🎨" },
+  { id: "ux", name: "UX Design", category: "design", emoji: "👥" },
+  { id: "ui", name: "UI Design", category: "design", emoji: "✒️" },
 
   // Other
-  { id: "git", name: "Git/GitHub", category: "other" },
-  { id: "graphql", name: "GraphQL", category: "other" },
-  { id: "rest", name: "REST APIs", category: "other" },
-  { id: "testing", name: "Testing", category: "other" },
+  { id: "git", name: "Git/GitHub", category: "other", emoji: "🐙" },
+  { id: "graphql", name: "GraphQL", category: "other", emoji: "◈" },
+  { id: "rest", name: "REST APIs", category: "other", emoji: "🔌" },
+  { id: "testing", name: "Testing", category: "other", emoji: "🐞" },
 ];
 
 const CATEGORY_INFO: Record<
@@ -121,9 +122,6 @@ export const Step3Skills: React.FC<Step3SkillsProps> = ({
   };
 
   const categories = Object.keys(CATEGORY_INFO);
-  const getSkillEmoji = (category: string): string => {
-    return CATEGORY_INFO[category]?.emoji || "💡";
-  };
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4">
@@ -148,7 +146,7 @@ export const Step3Skills: React.FC<Step3SkillsProps> = ({
       </div>
 
       {/* Category Filter */}
-      <div className="flex gap-2 overflow-x-auto pb-3 mb-6">
+      <div className="flex gap-2 overflow-x-auto pb-3 mb-6 scrollbar-hide">
         <button
           onClick={() => setSelectedCategory(null)}
           className={`px-4 py-2 rounded-full font-semibold whitespace-nowrap transition-all ${
@@ -188,7 +186,7 @@ export const Step3Skills: React.FC<Step3SkillsProps> = ({
                 onClick={() => toggleSkill(skill.id)}
                 className={`relative p-4 rounded-lg border-2 cursor-pointer text-center transition-all ${
                   isSelected
-                    ? "border-primary bg-primary-lighter shadow-md"
+                    ? "border-primary bg-primary-lighter shadow-md scale-105"
                     : "border-border bg-surface hover:border-primary hover:-translate-y-1"
                 }`}
               >
@@ -197,8 +195,9 @@ export const Step3Skills: React.FC<Step3SkillsProps> = ({
                     ✓
                   </div>
                 )}
-                <div className="text-2xl mb-2">
-                  {getSkillEmoji(skill.category)}
+                {/* 2. Updated to use the specific skill emoji directly */}
+                <div className="text-3xl mb-2 drop-shadow-sm">
+                  {skill.emoji}
                 </div>
                 <div
                   className={`font-semibold text-sm ${
@@ -220,14 +219,14 @@ export const Step3Skills: React.FC<Step3SkillsProps> = ({
         </div>
       )}
 
-      {/* Skills Count */}
+      {/* Skills Count Bar */}
       <div
-        className={`text-center p-4 rounded-lg mb-8 font-semibold ${
+        className={`text-center p-4 rounded-lg mb-8 font-semibold transition-colors duration-300 ${
           topSkills.length >= 3
-            ? "bg-green-100 text-green-800"
+            ? "bg-green-100 text-green-800 border border-green-200"
             : topSkills.length > 0
-            ? "bg-yellow-100 text-yellow-800"
-            : "bg-gray-100 text-gray-800"
+            ? "bg-yellow-50 text-yellow-800 border border-yellow-200"
+            : "bg-gray-50 text-gray-800 border border-gray-200"
         }`}
       >
         {topSkills.length === 0
@@ -248,10 +247,10 @@ export const Step3Skills: React.FC<Step3SkillsProps> = ({
         <button
           onClick={onNext}
           disabled={topSkills.length < 3}
-          className={`px-6 py-3 rounded-lg font-semibold transition-all ${
+          className={`px-6 py-3 rounded-lg font-semibold transition-all shadow-md ${
             topSkills.length < 3
               ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-              : "bg-primary text-white hover:bg-primary-dark"
+              : "bg-primary text-white hover:bg-primary-dark hover:shadow-lg"
           }`}
         >
           Continue →
@@ -259,4 +258,4 @@ export const Step3Skills: React.FC<Step3SkillsProps> = ({
       </div>
     </div>
   );
-};
+};  

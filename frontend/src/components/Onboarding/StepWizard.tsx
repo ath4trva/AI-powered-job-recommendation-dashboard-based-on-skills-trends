@@ -101,8 +101,7 @@ export const StepWizard: React.FC<StepWizardProps> = ({ onComplete }) => {
             Welcome Aboard!
           </h1>
           <p className="text-lg text-text-secondary mb-8">
-            We've personalized your job recommendations based on your
-            preferences.
+            We've personalized your job recommendations based on your preferences.
           </p>
           <button
             onClick={() => {
@@ -119,7 +118,7 @@ export const StepWizard: React.FC<StepWizardProps> = ({ onComplete }) => {
 
   return (
     <div className="min-h-screen bg-background py-12 px-4">
-      <div className="max-width-5xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-5xl font-bold text-primary mb-2">
@@ -131,20 +130,21 @@ export const StepWizard: React.FC<StepWizardProps> = ({ onComplete }) => {
           </p>
         </div>
 
-        {/* Progress Section */}
+        {/* Progress Section - UPDATED */}
         <div className="flex items-center gap-4 mb-8">
           <div className="flex-1">
-            <div className="w-full h-2 bg-border rounded-full overflow-hidden">
+            {/* Changed from h-2 to h-3, added gray-200 background for visibility, added shadow-inner */}
+            <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden shadow-inner">
               <div
-                className="h-full bg-primary transition-all duration-500"
+                // Changed from bg-primary to specific blue for safety, added ease-out
+                className="h-full bg-blue-600 transition-all duration-500 ease-out rounded-full shadow-sm"
                 style={{ width: `${progressPercent}%` }}
               ></div>
             </div>
           </div>
-          <div className="text-sm font-semibold text-text-secondary whitespace-nowrap">
-            Step {state.currentStep} of {TOTAL_STEPS}
-          </div>
+          
         </div>
+        
 
         {/* Step Indicators */}
         <div className="flex justify-center items-center gap-2 mb-12 flex-wrap">

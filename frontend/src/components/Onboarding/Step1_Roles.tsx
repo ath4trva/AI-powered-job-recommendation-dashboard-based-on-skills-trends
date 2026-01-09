@@ -12,7 +12,7 @@ const AVAILABLE_ROLES: JobRole[] = [
     id: "frontend",
     title: "Frontend Developer",
     description: "Build beautiful user interfaces with React, Vue, or Angular",
-    icon: "🎨",
+    icon: "💻", // Laptop/Screen for UI
     avgSalary: 85000,
     demandLevel: "high",
   },
@@ -20,7 +20,7 @@ const AVAILABLE_ROLES: JobRole[] = [
     id: "backend",
     title: "Backend Developer",
     description: "Develop robust server-side applications and APIs",
-    icon: "⚙️",
+    icon: "🗄️", // Server rack / Database cabinet
     avgSalary: 95000,
     demandLevel: "high",
   },
@@ -28,7 +28,7 @@ const AVAILABLE_ROLES: JobRole[] = [
     id: "fullstack",
     title: "Full Stack Developer",
     description: "Master both frontend and backend technologies",
-    icon: "🔗",
+    icon: "🚀", // Rocket (Building the whole product)
     avgSalary: 105000,
     demandLevel: "high",
   },
@@ -36,7 +36,7 @@ const AVAILABLE_ROLES: JobRole[] = [
     id: "devops",
     title: "DevOps Engineer",
     description: "Manage infrastructure, deployments, and cloud services",
-    icon: "☁️",
+    icon: "♾️", // The DevOps Infinity Loop symbol
     avgSalary: 110000,
     demandLevel: "medium",
   },
@@ -44,7 +44,7 @@ const AVAILABLE_ROLES: JobRole[] = [
     id: "data",
     title: "Data Engineer",
     description: "Build data pipelines and analytics infrastructure",
-    icon: "📊",
+    icon: "🛢️", // Database cylinder / Oil drum (Data is the new oil)
     avgSalary: 100000,
     demandLevel: "high",
   },
@@ -52,7 +52,7 @@ const AVAILABLE_ROLES: JobRole[] = [
     id: "ai",
     title: "AI/ML Engineer",
     description: "Develop machine learning models and AI solutions",
-    icon: "🤖",
+    icon: "🧠", // Brain / Neural Network
     avgSalary: 120000,
     demandLevel: "medium",
   },
@@ -60,7 +60,7 @@ const AVAILABLE_ROLES: JobRole[] = [
     id: "qa",
     title: "QA Engineer",
     description: "Ensure software quality through testing and automation",
-    icon: "✅",
+    icon: "🔎", // Magnifying glass (Finding bugs)
     avgSalary: 75000,
     demandLevel: "medium",
   },
@@ -68,7 +68,7 @@ const AVAILABLE_ROLES: JobRole[] = [
     id: "ux",
     title: "UX/UI Designer",
     description: "Create intuitive and beautiful user experiences",
-    icon: "✨",
+    icon: "🎨", // Palette for design
     avgSalary: 85000,
     demandLevel: "medium",
   },
@@ -109,7 +109,7 @@ export const Step1Roles: React.FC<Step1RolesProps> = ({
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4">
+    <div className="w-full max-w-5xl mx-auto px-4">
       <div className="mb-8">
         <h2 className="text-3xl font-bold text-gray-900 mb-2">
           What's Your Dream Role?
@@ -129,7 +129,7 @@ export const Step1Roles: React.FC<Step1RolesProps> = ({
               onClick={() => toggleRole(role.id)}
               className={`relative p-5 rounded-lg border-2 cursor-pointer transition-all duration-300 hover:shadow-lg ${
                 isSelected
-                  ? "border-primary bg-primary-lighter shadow-md"
+                  ? "border-primary bg-primary-lighter shadow-md transform -translate-y-1"
                   : "border-border bg-surface hover:-translate-y-1"
               }`}
             >
@@ -140,7 +140,7 @@ export const Step1Roles: React.FC<Step1RolesProps> = ({
               )}
 
               <div
-                className={`text-3xl mb-3 transition-transform ${
+                className={`text-4xl mb-4 transition-transform ${
                   isSelected ? "scale-110" : "group-hover:scale-105"
                 }`}
               >
@@ -156,7 +156,7 @@ export const Step1Roles: React.FC<Step1RolesProps> = ({
               </h3>
 
               <p
-                className={`text-sm mb-3 ${
+                className={`text-sm mb-4 min-h-[40px] ${
                   isSelected ? "text-primary-dark" : "text-text-secondary"
                 }`}
               >
@@ -188,7 +188,7 @@ export const Step1Roles: React.FC<Step1RolesProps> = ({
         <button
           onClick={onNext}
           disabled={selectedRoles.length === 0}
-          className={`px-6 py-3 rounded-lg font-semibold transition-all ${
+          className={`px-6 py-3 rounded-lg font-semibold transition-all shadow-md ${
             selectedRoles.length === 0
               ? "bg-gray-300 text-gray-500 cursor-not-allowed"
               : "bg-primary text-white hover:bg-primary-dark hover:shadow-lg"

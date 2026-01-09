@@ -1,44 +1,27 @@
-import React, { useState } from 'react'; // Removed useEffect
-import Login from '../src/components/Auth/Login';
+import React, { useState } from 'react';
+import Login from './components/Auth/Login'; // Adjust path if needed
 import { StepWizard } from './components/Onboarding/StepWizard';
 import type { UserPreferences } from './types'; 
 
 export default function App() {
-  // --- State with Lazy Initialization ---
-  // This function runs only once when the app loads, preventing the double-render error
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    return localStorage.getItem('isAuthenticated') === 'true';
-  });
-
-  const [hasOnboarded, setHasOnboarded] = useState<boolean>(() => {
-    const prefStatus = localStorage.getItem('userPreferences');
-    // Returns true if preferences exist, false otherwise
-    return !!prefStatus; 
-  });
+  // --- State (Resets on Refresh) ---
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [hasOnboarded, setHasOnboarded] = useState<boolean>(false);
 
   // --- Handlers ---
   const handleLogin = () => {
-    localStorage.setItem('isAuthenticated', 'true');
-    setIsAuthenticated(true);
-    
-    // Check if they did the wizard in a past session to update view immediately
-    if (localStorage.getItem('userPreferences')) {
-      setHasOnboarded(true);
-    }
+    // Just update state, don't save to storage
+    setIsAuthenticated(true); 
+    setHasOnboarded(false); // Ensures StepWizard shows up next
   };
 
   const handleOnboardingComplete = (preferences: UserPreferences) => {
     console.log("User preferences:", preferences);
-    // Save preferences to storage
-    localStorage.setItem("userPreferences", JSON.stringify(preferences));
-    // Move to Dashboard
+    // Move to Dashboard only in this session
     setHasOnboarded(true);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('isAuthenticated');
-    // Optional: Decide if you want to clear preferences on logout or keep them
-    // localStorage.removeItem('userPreferences'); 
     setIsAuthenticated(false);
     setHasOnboarded(false);
   };
@@ -59,7 +42,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center">
       <h1 className="text-3xl font-bold mb-4">Welcome to the Job Wizard! 🧙‍♂️</h1>
-      <p className="mb-8">Your preferences are saved. Ready to find jobs?</p>
+      <p className="mb-8">Your session is active. (Refresh to logout)</p>
       
       {/* Dashboard Component will go here */}
       
