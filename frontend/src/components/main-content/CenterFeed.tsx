@@ -1,30 +1,30 @@
+// src/components/main-content/CenterFeed.tsx
 import React, { useState } from 'react';
-import { Search, MapPin, MoreHorizontal, ChevronRight, Briefcase } from 'lucide-react';
+import { MapPin, MoreHorizontal, ChevronRight, Briefcase, Rocket } from 'lucide-react';
+import { FaRocket } from 'react-icons/fa'; // Using FontAwesome for consistency if needed, or stick to Lucide
+import type { Job } from "../../App";
 
 // --- Types ---
-interface Job {
-  id: string;
-  title: string;
-  company: string;
-  location: string;
-  type: string;
-  matchScore: number;
-  logoColor: string; // Mocking a logo color
-}
-
+// Merging your existing local types with the App's Job type logic
 interface Application {
-  id: string;
+  id: string | number;
   title: string;
   company: string;
   appliedDate: string;
   status: 'Saved' | 'Applied' | 'In Progress' | 'Interview';
 }
 
-const CenterFeed: React.FC = () => {
+interface CenterFeedProps {
+  savedJobs: Job[];
+  onStartSwiping: () => void;
+}
+
+const CenterFeed: React.FC<CenterFeedProps> = ({ savedJobs, onStartSwiping }) => {
   const [activeTab, setActiveTab] = useState<'Saved' | 'Applied' | 'In Progress'>('In Progress');
 
-  // Mock Data: Recommended Jobs
-  const recommendedJobs: Job[] = [
+  // Mock Data: Recommended Jobs (Horizontal Scroll)
+  // kept slightly different structure for the "Quick Apply" cards vs the "Swipe" cards
+  const recommendedJobs = [
     { id: '1', title: 'Senior React Developer', company: 'TechFlow', location: 'Remote', type: 'Full-time', matchScore: 95, logoColor: 'bg-blue-500' },
     { id: '2', title: 'Frontend Engineer', company: 'Creative Inc.', location: 'New York, NY', type: 'Hybrid', matchScore: 88, logoColor: 'bg-purple-500' },
     { id: '3', title: 'UI/UX Developer', company: 'Designify', location: 'London, UK', type: 'Contract', matchScore: 82, logoColor: 'bg-pink-500' },
@@ -35,12 +35,22 @@ const CenterFeed: React.FC = () => {
     { id: '101', title: 'Product Designer', company: 'Spotify', appliedDate: '2 days ago', status: 'Interview' },
     { id: '102', title: 'Frontend Lead', company: 'Netflix', appliedDate: '1 week ago', status: 'In Progress' },
     { id: '103', title: 'React Native Dev', company: 'Airbnb', appliedDate: '3 weeks ago', status: 'Applied' },
-    { id: '104', title: 'Full Stack Eng', company: 'Vercel', appliedDate: '1 month ago', status: 'Saved' },
   ];
 
-  // Filter applications based on the active tab (Simplified logic for demo)
-  // In a real app, you might map 'In Progress' to both 'In Progress' and 'Interview' statuses
-  const filteredApps = applications.filter(app => {
+  // Combine Mock Applications with Real Saved Jobs from Swipe
+  // We map the "savedJobs" from App.tsx into the format required for this list
+  const savedJobsAsApps: Application[] = savedJobs.map(job => ({
+    id: job.id,
+    title: job.title,
+    company: job.company,
+    appliedDate: 'Just now',
+    status: 'Saved'
+  }));
+
+  const allItems = [...applications, ...savedJobsAsApps];
+
+  // Filter logic
+  const filteredApps = allItems.filter(app => {
     if (activeTab === 'In Progress') return app.status === 'In Progress' || app.status === 'Interview';
     return app.status === activeTab;
   });
@@ -48,28 +58,21 @@ const CenterFeed: React.FC = () => {
   return (
     <main className="w-full flex flex-col gap-6">
       
-      {/* 1. Search Action Center */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-        <h2 className="text-lg font-bold text-gray-900 mb-4">Find your next role</h2>
-        <div className="flex flex-col md:flex-row gap-3">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-            <input 
-              type="text" 
-              placeholder="Job title, keywords, or company" 
-              className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm"
-            />
-          </div>
-          <div className="flex-1 relative">
-            <MapPin className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-            <input 
-              type="text" 
-              placeholder="City, state, or zip" 
-              className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm"
-            />
-          </div>
-          <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-6 rounded-lg transition-colors">
-            Search
+      {/* 1. START SWIPING BANNER (Replaces Search) */}
+      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-6 text-white shadow-lg text-center relative overflow-hidden">
+        {/* Background Pattern Effect (Optional) */}
+        <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-white opacity-10 rounded-full blur-xl"></div>
+        <div className="absolute bottom-0 left-0 -mb-4 -ml-4 w-32 h-32 bg-purple-500 opacity-20 rounded-full blur-xl"></div>
+        
+        <div className="relative z-10">
+          <h2 className="text-2xl font-bold mb-2">142 New Matches</h2>
+          <p className="text-blue-100 mb-6 text-sm">Found today based on your profile & preferences</p>
+          
+          <button 
+            onClick={onStartSwiping}
+            className="bg-white text-blue-700 px-8 py-3 rounded-full font-bold shadow-md hover:bg-gray-100 transition-transform transform hover:scale-105 flex items-center gap-2 mx-auto"
+          >
+            START SWIPING <Rocket className="w-5 h-5" />
           </button>
         </div>
       </div>
@@ -127,7 +130,7 @@ const CenterFeed: React.FC = () => {
                     : 'border-transparent text-gray-500 hover:text-gray-700'
                 }`}
               >
-                {tab}
+                {tab} {tab === 'Saved' && savedJobs.length > 0 && <span className="ml-1 bg-gray-100 text-gray-600 text-xs px-1.5 py-0.5 rounded-full">{savedJobs.length}</span>}
               </button>
             ))}
           </div>
@@ -143,7 +146,7 @@ const CenterFeed: React.FC = () => {
                 </div>
                 <div>
                   <h4 className="font-bold text-gray-900 text-sm">{app.title}</h4>
-                  <p className="text-xs text-gray-500">{app.company} • Applied {app.appliedDate}</p>
+                  <p className="text-xs text-gray-500">{app.company} • {app.status === 'Saved' ? 'Added' : 'Applied'} {app.appliedDate}</p>
                 </div>
               </div>
 
@@ -165,7 +168,9 @@ const CenterFeed: React.FC = () => {
             </div>
           )) : (
             <div className="p-8 text-center text-gray-400 text-sm">
-              No applications in this category yet.
+              {activeTab === 'Saved' 
+                ? "You haven't saved any jobs yet. Start swiping!" 
+                : "No applications in this category yet."}
             </div>
           )}
         </div>
