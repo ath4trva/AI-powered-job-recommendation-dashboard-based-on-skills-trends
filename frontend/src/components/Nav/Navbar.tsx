@@ -15,7 +15,7 @@ const Navbar = ({ companyLogoSrc, companyName = "Company" }: NavbarProps) => {
             src={companyLogoSrc}
             alt="Company Logo"
             // Auto width preserves aspect ratio; h-8 to h-10 is standard for wordmarks
-            className="h-8 sm:h-18 w-auto object-contain"
+            className="h-10 sm:h-18 w-auto object-contain"
           />
         ) : (
           <span className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
