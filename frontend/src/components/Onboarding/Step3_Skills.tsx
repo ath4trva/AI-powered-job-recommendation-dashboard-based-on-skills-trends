@@ -184,7 +184,7 @@ export const Step3Skills: React.FC<Step3SkillsProps> = ({
               <div
                 key={skill.id}
                 onClick={() => toggleSkill(skill.id)}
-                className={`relative p-4 rounded-lg border-2 cursor-pointer text-center transition-all ${
+                className={`relative p-3 sm:p-4 rounded-lg border-2 cursor-pointer text-center transition-all ${
                   isSelected
                     ? "border-primary bg-primary-lighter shadow-md scale-105"
                     : "border-border bg-surface hover:border-primary hover:-translate-y-1"
@@ -258,4 +258,4 @@ export const Step3Skills: React.FC<Step3SkillsProps> = ({
       </div>
     </div>
   );
-};  
+};

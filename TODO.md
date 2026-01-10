@@ -1,0 +1,1 @@
+- [x] Update the work type cards grid in Step4_Culture.tsx to display at least 2 cards horizontally on mobile by changing grid-cols-1 to grid-cols-2

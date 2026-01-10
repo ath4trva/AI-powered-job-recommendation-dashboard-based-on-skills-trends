@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from "react";
+// Make sure to import your types properly here if they are in a separate file
 import type { UserPreferences, OnboardingState } from "../../types/index";
 import { Step1Roles } from "./Step1_Roles";
 import { Step2Salary } from "./Step2_Salary";
@@ -89,25 +90,26 @@ export const StepWizard: React.FC<StepWizardProps> = ({ onComplete }) => {
     }
   }, [state.preferences, onComplete, markStepComplete]);
 
-  const progressPercent = (state.currentStep / TOTAL_STEPS) * 100;
+  
 
   // Completion screen
   if (state.isCompleted) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         <div className="text-center">
           <div className="text-6xl mb-6 animate-bounce">🎉</div>
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
             Welcome Aboard!
           </h1>
-          <p className="text-lg text-text-secondary mb-8">
-            We've personalized your job recommendations based on your preferences.
+          <p className="text-lg text-gray-600 mb-8">
+            We've personalized your job recommendations based on your
+            preferences.
           </p>
           <button
             onClick={() => {
               window.location.href = "/dashboard";
             }}
-            className="bg-primary text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-dark transition-all"
+            className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all"
           >
             View Your Recommendations →
           </button>
@@ -117,68 +119,85 @@ export const StepWizard: React.FC<StepWizardProps> = ({ onComplete }) => {
   }
 
   return (
-    <div className="min-h-screen bg-background py-12 px-4">
+    <div className="min-h-screen bg-gray-50 py-12 px-4 pt-20 sm:pt-30">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-primary mb-2">
+        <div className="text-center mb-8 sm:mb-12">
+          <h1 className="text-3xl sm:text-5xl font-bold text-blue-600 mb-2 pt-4">
             Let's Get You Started
           </h1>
-          <p className="text-lg text-text-secondary">
+          <p className="text-base sm:text-lg text-gray-600">
             Tell us about your ideal job, and we'll find the perfect
             opportunities for you
           </p>
         </div>
 
-        {/* Progress Section - UPDATED */}
-        <div className="flex items-center gap-4 mb-8">
-          <div className="flex-1">
-            {/* Changed from h-2 to h-3, added gray-200 background for visibility, added shadow-inner */}
-            <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden shadow-inner">
-              <div
-                // Changed from bg-primary to specific blue for safety, added ease-out
-                className="h-full bg-blue-600 transition-all duration-500 ease-out rounded-full shadow-sm"
-                style={{ width: `${progressPercent}%` }}
-              ></div>
-            </div>
-          </div>
+        {/* --- IMPROVED STEPPER SECTION START --- 
+           1. Removed flex-wrap to keep them on one line.
+           2. Used flex-1 for lines so they shrink on mobile.
+           3. Adjusted button sizes (w-8 vs w-10) for mobile.
+        */}
+        <div className="max-w-3xl mx-auto mb-8 sm:mb-12">
           
-        </div>
-        
+          {/* Numbered Steps */}
+          <div className="flex justify-between items-center w-full">
+            {STEP_NAMES.map((name, index) => {
+              const stepNum = index + 1;
+              const isCompleted =
+                state.completedSteps[index] && stepNum !== state.currentStep;
+              const isActive = state.currentStep === stepNum;
 
-        {/* Step Indicators */}
-        <div className="flex justify-center items-center gap-2 mb-12 flex-wrap">
-          {STEP_NAMES.map((name, index) => {
-            const stepNum = index + 1;
-            const isCompleted =
-              state.completedSteps[index] && stepNum !== state.currentStep;
-            const isActive = state.currentStep === stepNum;
+              return (
+                <React.Fragment key={stepNum}>
+                  {/* Step Bubble */}
+                  <button
+                    onClick={() => goToStep(stepNum)}
+                    title={name}
+                    className={`
+                      relative z-10 flex items-center justify-center 
+                      w-8 h-8 sm:w-10 sm:h-10 rounded-full 
+                      font-bold text-xs sm:text-sm transition-all duration-300
+                      ${
+                        isActive
+                          ? "bg-blue-600 text-white shadow-lg scale-110 ring-4 ring-blue-100"
+                          : isCompleted
+                          ? "bg-green-500 text-white"
+                          : "bg-gray-200 text-gray-500 hover:bg-blue-400 hover:text-white"
+                      }
+                    `}
+                  >
+                    {isCompleted ? "✓" : stepNum}
+                  </button>
 
-            return (
-              <React.Fragment key={stepNum}>
-                <button
-                  onClick={() => goToStep(stepNum)}
-                  title={name}
-                  className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all ${
-                    isActive
-                      ? "bg-primary text-white shadow-lg scale-110"
-                      : isCompleted
-                      ? "bg-success text-white"
-                      : "bg-border text-text-secondary hover:bg-primary hover:text-white"
-                  }`}
-                >
-                  {isCompleted ? "✓" : stepNum}
-                </button>
-                {stepNum < STEP_NAMES.length && (
-                  <div className="h-1 w-8 bg-border"></div>
-                )}
-              </React.Fragment>
-            );
-          })}
+                  {/* Connecting Line (Only render if not the last item) */}
+                  {stepNum < STEP_NAMES.length && (
+                    <div className="flex-1 h-1 mx-2 sm:mx-4 bg-gray-200 rounded">
+                      <div
+                        className={`h-full rounded transition-all duration-500 ${
+                          stepNum < state.currentStep
+                            ? "bg-green-500"
+                            : "bg-transparent"
+                        }`}
+                        style={{ width: "100%" }}
+                      ></div>
+                    </div>
+                  )}
+                </React.Fragment>
+              );
+            })}
+          </div>
+
+          {/* Mobile Labels (Optional: Shows current step name below bubbles) */}
+          <div className="text-center mt-2 sm:hidden">
+            <span className="text-sm font-medium text-blue-600">
+              {STEP_NAMES[state.currentStep - 1]}
+            </span>
+          </div>
         </div>
+        {/* --- IMPROVED STEPPER SECTION END --- */}
 
         {/* Step Content */}
-        <div className="bg-surface rounded-2xl shadow-lg p-8 min-h-96">
+        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-8 min-h-[400px]">
           {state.currentStep === 1 && (
             <Step1Roles
               selectedRoles={state.preferences.selectedRoles}

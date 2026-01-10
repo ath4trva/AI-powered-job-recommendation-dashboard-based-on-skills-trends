@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import React, { useState, useCallback, useContext } from "react";
+import React, { useState, useCallback } from "react";
 import type { ReactNode } from "react";
 import type { User, UserPreferences } from "../types/index";
 import { AuthContext, type AuthContextType } from "./AuthContext.shared";

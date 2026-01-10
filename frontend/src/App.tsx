@@ -1,23 +1,25 @@
-import React, { useState } from 'react';
-import Login from './components/Auth/Login'; // Adjust path if needed
-import { StepWizard } from './components/Onboarding/StepWizard';
-import type { UserPreferences } from './types'; 
+import { useState } from "react";
+import Login from "./components/Auth/Login";
+import { StepWizard } from "./components/Onboarding/StepWizard";
+import Navbar from "./components/Nav/Navbar"; 
+import type { UserPreferences } from "./types";
+
+// Removed the icon logo import
+import companyLogo from "./assets/Company name.png"; 
 
 export default function App() {
-  // --- State (Resets on Refresh) ---
+  // --- State ---
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [hasOnboarded, setHasOnboarded] = useState<boolean>(false);
 
   // --- Handlers ---
   const handleLogin = () => {
-    // Just update state, don't save to storage
-    setIsAuthenticated(true); 
-    setHasOnboarded(false); // Ensures StepWizard shows up next
+    setIsAuthenticated(true);
+    setHasOnboarded(false);
   };
 
   const handleOnboardingComplete = (preferences: UserPreferences) => {
     console.log("User preferences:", preferences);
-    // Move to Dashboard only in this session
     setHasOnboarded(true);
   };
 
@@ -28,14 +30,25 @@ export default function App() {
 
   // --- Render Logic ---
 
-  // 1. Not Logged In -> Show Login
+  // 1. Not Logged In -> Show Login with Company Logo
   if (!isAuthenticated) {
-    return <Login onLogin={handleLogin} />;
+    return (
+      <main className="relative w-full min-h-screen">
+        <Navbar companyLogoSrc={companyLogo} />
+        <Login onLogin={handleLogin} />
+      </main>
+    );
   }
 
-  // 2. Logged In BUT No Preferences -> Show Wizard
+  // 2. Logged In BUT No Preferences -> Show Wizard with Company Logo
   if (!hasOnboarded) {
-    return <StepWizard onComplete={handleOnboardingComplete} />;
+    return (
+      <main className="relative w-full min-h-screen">
+        {/* Updated to use the image logo instead of just text "JobWiz" */}
+        <Navbar companyLogoSrc={companyLogo} companyName="JobWiz" />
+        <StepWizard onComplete={handleOnboardingComplete} />
+      </main>
+    );
   }
 
   // 3. Logged In AND Onboarded -> Show Dashboard
@@ -43,11 +56,9 @@ export default function App() {
     <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center">
       <h1 className="text-3xl font-bold mb-4">Welcome to the Job Wizard! 🧙‍♂️</h1>
       <p className="mb-8">Your session is active. (Refresh to logout)</p>
-      
-      {/* Dashboard Component will go here */}
-      
-      <button 
-        onClick={handleLogout} 
+
+      <button
+        onClick={handleLogout}
         className="px-6 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition-colors"
       >
         Logout

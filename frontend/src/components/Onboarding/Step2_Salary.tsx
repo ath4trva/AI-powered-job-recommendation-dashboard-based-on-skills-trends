@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 // --- Theme Constants (Adjust these to match your project's theme.ts) ---
 // If you have these imported, you can remove this block
@@ -41,7 +41,7 @@ export const Step2Salary: React.FC<Step2SalaryProps> = ({
   }, [salaryRange]);
 
   // --- Handlers ---
-  
+
   // Update state immediately for smooth UI, then trigger parent callback
   const handleMinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Math.min(Number(e.target.value), maxVal - STEP);
@@ -152,20 +152,20 @@ export const Step2Salary: React.FC<Step2SalaryProps> = ({
 
       <div className="bg-white rounded-2xl p-8 mb-8 shadow-sm border border-gray-100">
         {/* Value Display */}
-        <div className="grid grid-cols-2 gap-8 mb-8">
+        <div className="grid grid-cols-2 gap-4 sm:gap-8 mb-6 sm:mb-8">
           <div className="text-center">
-            <div className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-2">
+            <div className="text-xs sm:text-sm font-semibold text-gray-400 uppercase tracking-wide mb-2">
               Minimum
             </div>
-            <div className="text-3xl font-bold text-indigo-600">
+            <div className="text-2xl sm:text-3xl font-bold text-indigo-600">
               {formatCurrency(minVal)}
             </div>
           </div>
           <div className="text-center">
-            <div className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-2">
+            <div className="text-xs sm:text-sm font-semibold text-gray-400 uppercase tracking-wide mb-2">
               Maximum
             </div>
-            <div className="text-3xl font-bold text-indigo-600">
+            <div className="text-2xl sm:text-3xl font-bold text-indigo-600">
               {formatCurrency(maxVal)}
             </div>
           </div>
@@ -191,7 +191,7 @@ export const Step2Salary: React.FC<Step2SalaryProps> = ({
           ></div>
 
           {/* 3. Range Inputs (Invisible but interactive) */}
-          
+
           {/* Min Input */}
           <input
             type="range"
@@ -204,8 +204,8 @@ export const Step2Salary: React.FC<Step2SalaryProps> = ({
             onTouchEnd={handleDragEnd}
             className="range-slider-input"
             style={{
-                // If minVal is high, bring it to front so it can be grabbed
-                zIndex: minVal > MAX_SALARY - 10000 ? 5 : 3 
+              // If minVal is high, bring it to front so it can be grabbed
+              zIndex: minVal > MAX_SALARY - 10000 ? 5 : 3,
             }}
             aria-label="Minimum Salary"
           />

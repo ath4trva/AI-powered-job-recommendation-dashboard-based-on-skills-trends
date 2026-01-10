@@ -104,12 +104,12 @@ export const Step4Culture: React.FC<Step4CultureProps> = ({
         <h3 className="text-xl font-bold text-gray-900 mb-4">
           Preferred Work Type
         </h3>
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
           {WORK_TYPE_OPTIONS.map((option) => (
             <div
               key={option.value}
               onClick={() => onWorkTypeChange(option.value)}
-              className={`p-6 rounded-lg border-2 cursor-pointer text-center transition-all ${
+              className={`p-4 sm:p-6 rounded-lg border-2 cursor-pointer text-center transition-all ${
                 workType === option.value
                   ? "border-primary bg-primary-lighter shadow-md"
                   : "border-border bg-surface hover:border-primary"
@@ -146,7 +146,7 @@ export const Step4Culture: React.FC<Step4CultureProps> = ({
               <div
                 key={option.value}
                 onClick={() => toggleCulture(option.value)}
-                className={`relative p-5 rounded-lg border-2 cursor-pointer transition-all ${
+                className={`relative p-3 sm:p-5 rounded-lg border-2 cursor-pointer transition-all ${
                   isSelected
                     ? "border-primary bg-primary-lighter shadow-md"
                     : "border-border bg-surface hover:border-primary hover:-translate-y-1"

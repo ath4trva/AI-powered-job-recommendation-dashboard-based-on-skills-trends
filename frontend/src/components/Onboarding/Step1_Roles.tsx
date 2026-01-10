@@ -127,7 +127,7 @@ export const Step1Roles: React.FC<Step1RolesProps> = ({
             <div
               key={role.id}
               onClick={() => toggleRole(role.id)}
-              className={`relative p-5 rounded-lg border-2 cursor-pointer transition-all duration-300 hover:shadow-lg ${
+              className={`relative p-3 sm:p-5 rounded-lg border-2 cursor-pointer transition-all duration-300 hover:shadow-lg ${
                 isSelected
                   ? "border-primary bg-primary-lighter shadow-md transform -translate-y-1"
                   : "border-border bg-surface hover:-translate-y-1"
