@@ -3,7 +3,7 @@ import Login from "./components/Auth/Login";
 import { StepWizard } from "./components/Onboarding/StepWizard";
 import Navbar from "./components/Nav/Navbar";
 // Import the new Dashboard Layout
-import MainContent from "../src/main-content/MainContent";
+import MainContent from "./components/main-content/MainContent";
 import type { UserPreferences } from "./types";
 
 import companyLogo from "./assets/Company name.png";
