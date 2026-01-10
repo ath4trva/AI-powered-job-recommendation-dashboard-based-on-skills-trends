@@ -1,11 +1,12 @@
 import { useState } from "react";
 import Login from "./components/Auth/Login";
 import { StepWizard } from "./components/Onboarding/StepWizard";
-import Navbar from "./components/Nav/Navbar"; 
+import Navbar from "./components/Nav/Navbar";
+// Import the new Dashboard Layout
+import MainContent from "../src/main-content/MainContent";
 import type { UserPreferences } from "./types";
 
-// Removed the icon logo import
-import companyLogo from "./assets/Company name.png"; 
+import companyLogo from "./assets/Company name.png";
 
 export default function App() {
   // --- State ---
@@ -15,6 +16,7 @@ export default function App() {
   // --- Handlers ---
   const handleLogin = () => {
     setIsAuthenticated(true);
+    // Reset onboarding if needed, or check backend for user status
     setHasOnboarded(false);
   };
 
@@ -23,46 +25,35 @@ export default function App() {
     setHasOnboarded(true);
   };
 
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    setHasOnboarded(false);
-  };
-
   // --- Render Logic ---
 
-  // 1. Not Logged In -> Show Login with Company Logo
+  // 1. Not Logged In -> Show Login
   if (!isAuthenticated) {
     return (
-      <main className="relative w-full min-h-screen">
-        <Navbar companyLogoSrc={companyLogo} />
+      <main className="relative w-full min-h-screen bg-white">
+        <Navbar companyLogoSrc={companyLogo} companyName="JobWiz" />
         <Login onLogin={handleLogin} />
       </main>
     );
   }
 
-  // 2. Logged In BUT No Preferences -> Show Wizard with Company Logo
+  // 2. Logged In BUT No Preferences -> Show Wizard
   if (!hasOnboarded) {
     return (
-      <main className="relative w-full min-h-screen">
-        {/* Updated to use the image logo instead of just text "JobWiz" */}
+      <main className="relative w-full min-h-screen bg-gray-50">
         <Navbar companyLogoSrc={companyLogo} companyName="JobWiz" />
-        <StepWizard onComplete={handleOnboardingComplete} />
+        <div className="pt-10">
+          <StepWizard onComplete={handleOnboardingComplete} />
+        </div>
       </main>
     );
   }
 
-  // 3. Logged In AND Onboarded -> Show Dashboard
+  // 3. Logged In AND Onboarded -> Show New Dashboard (MainContent)
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center">
-      <h1 className="text-3xl font-bold mb-4">Welcome to the Job Wizard! 🧙‍♂️</h1>
-      <p className="mb-8">Your session is active. (Refresh to logout)</p>
-
-      <button
-        onClick={handleLogout}
-        className="px-6 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition-colors"
-      >
-        Logout
-      </button>
-    </div>
+    <main className="relative w-full min-h-screen bg-gray-50">
+      <Navbar companyLogoSrc={companyLogo} companyName="JobWiz" />
+      <MainContent />
+    </main>
   );
 }

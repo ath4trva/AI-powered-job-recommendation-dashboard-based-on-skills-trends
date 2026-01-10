@@ -1,14 +1,12 @@
-import React from "react";
-
 interface NavbarProps {
   companyLogoSrc?: string; // URL for the Company Name image
-  companyName?: string;    // Fallback text if image fails or isn't provided
+  companyName?: string; // Fallback text if image fails or isn't provided
 }
 
 const Navbar = ({ companyLogoSrc, companyName = "Company" }: NavbarProps) => {
   return (
-    // Apple Style: Generous padding (p-6 to p-8) and absolute positioning
-    <nav className="absolute top-0 left-0 w-full z-50 p-6 lg:p-8">
+    // Apple Style: Compact padding (p-4 to p-6) and absolute positioning with elegant background
+    <nav className="absolute top-0 left-0 w-full z-50 p-4 lg:p-6 bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-200/50">
       <div className="flex items-center">
         {companyLogoSrc ? (
           <img
