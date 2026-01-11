@@ -18,23 +18,23 @@ const Navbar: React.FC<NavbarProps> = ({ companyLogoSrc, companyName = "Company"
   ];
 
   return (
-    <nav className="absolute top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-200/50">
-      <div className="p-4 lg:p-6 flex items-center gap-6">
+    <nav className="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-200/50">
+      <div className="p-3 md:p-4 lg:p-6 flex items-center gap-3 md:gap-6">
         <div className="flex-shrink-0">
           {companyLogoSrc ? (
             <img
               src={companyLogoSrc}
               alt="Company Logo"
-              className="h-10 sm:h-18 w-auto object-contain"
+              className="h-8 md:h-10 lg:h-12 w-auto object-contain"
             />
           ) : (
-            <span className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+            <span className="text-lg md:text-xl lg:text-2xl font-bold text-slate-900 tracking-tight">
               {companyName}
             </span>
           )}
         </div>
         
-        <div className="flex-1 relative overflow-hidden bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 rounded-full">
+        <div className="hidden md:block flex-1 relative overflow-hidden bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 rounded-full">
           <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-blue-50 to-transparent z-10 pointer-events-none" />
           
           <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-pink-50 to-transparent z-10 pointer-events-none" />
@@ -43,7 +43,7 @@ const Navbar: React.FC<NavbarProps> = ({ companyLogoSrc, companyName = "Company"
             {trendingItems.map((item, idx) => (
               <div
                 key={`first-${idx}`}
-                className="flex-shrink-0 px-6 py-2 text-sm font-medium text-gray-700 whitespace-nowrap"
+                className="flex-shrink-0 px-6 py-2 text-xs md:text-sm font-medium text-gray-700 whitespace-nowrap"
               >
                 {item}
               </div>
@@ -51,7 +51,7 @@ const Navbar: React.FC<NavbarProps> = ({ companyLogoSrc, companyName = "Company"
             {trendingItems.map((item, idx) => (
               <div
                 key={`second-${idx}`}
-                className="flex-shrink-0 px-6 py-2 text-sm font-medium text-gray-700 whitespace-nowrap"
+                className="flex-shrink-0 px-6 py-2 text-xs md:text-sm font-medium text-gray-700 whitespace-nowrap"
               >
                 {item}
               </div>

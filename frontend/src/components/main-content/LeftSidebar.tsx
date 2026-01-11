@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { User, Briefcase, Bell, Eye, TrendingUp, Settings } from "lucide-react";
+import { User, Briefcase, Bell, TrendingUp, Settings, LogOut, Eye } from "lucide-react";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebaseConfig";
 import { AVAILABLE_SKILLS } from "../../data/skillsData";
 import type { UserPreferences } from "../../types";
 
@@ -20,9 +22,10 @@ interface ActivityDay {
 
 interface LeftSidebarProps {
   userPreferences?: UserPreferences | null;
+  onViewSavedJobs?: () => void;
 }
 
-const LeftSidebar: React.FC<LeftSidebarProps> = ({ userPreferences }) => {
+const LeftSidebar: React.FC<LeftSidebarProps> = ({ userPreferences, onViewSavedJobs }) => {
   const [user] = useState<UserProfile>({
     name: "John Doe",
     headline: "Senior Frontend Engineer",
@@ -31,6 +34,15 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({ userPreferences }) => {
     profileViews: 142,
     viewChange: 5.4,
   });
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      // Redirect to login page happens automatically when auth state changes in App.tsx
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
 
   // Activity Heatmap Data (last 3 weeks)
   const activityData: ActivityDay[][] = [
@@ -281,12 +293,15 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({ userPreferences }) => {
       {/* 5. Quick Navigation Links */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <nav className="flex flex-col">
-          <button className="flex items-center justify-between px-4 py-3.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-all border-l-4 border-transparent hover:border-blue-600 group">
+          <button 
+            onClick={onViewSavedJobs}
+            className="flex items-center justify-between px-4 py-3.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-all border-l-4 border-transparent hover:border-blue-600 group"
+          >
             <div className="flex items-center gap-3">
               <Briefcase className="w-4 h-4 text-gray-400 group-hover:text-blue-600" />
               <span>Saved Jobs</span>
             </div>
-            <span className="text-xs text-gray-400 font-normal">12</span>
+            <span className="text-xs text-gray-400 font-normal">📋</span>
           </button>
 
           <div className="h-px bg-gray-100 mx-4"></div>
@@ -306,6 +321,16 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({ userPreferences }) => {
           <button className="flex items-center gap-3 px-4 py-3.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-all border-l-4 border-transparent hover:border-blue-600 group">
             <Settings className="w-4 h-4 text-gray-400 group-hover:text-blue-600" />
             <span>Preferences</span>
+          </button>
+
+          <div className="h-px bg-gray-100 mx-4"></div>
+
+          <button 
+            onClick={handleLogout}
+            className="flex items-center justify-center gap-2 mx-4 my-3 px-4 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg active:scale-95"
+          >
+            <LogOut className="w-5 h-5" />
+            <span>Logout</span>
           </button>
         </nav>
       </div>

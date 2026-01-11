@@ -1,26 +1,37 @@
-import React, { useState, useCallback } from "react";
-// Make sure to import your types properly here if they are in a separate file
+// src/components/Onboarding/StepWizard.tsx
+
+import React, { useState, useCallback, useContext } from "react";
 import type { UserPreferences, OnboardingState } from "../../types/index";
+import { AuthContext } from "../../contexts/AuthContext.shared";
 import { Step1Roles } from "./Step1_Roles";
 import { Step2Salary } from "./Step2_Salary";
 import { Step3Skills } from "./Step3_Skills";
 import { Step4Culture } from "./Step4_Culture";
+import Step_Resume from "../Onboarding/Step_Resume"; // NEW IMPORT
 import { Step5Review } from "./Step5_Review";
 
 interface StepWizardProps {
   onComplete?: (preferences: UserPreferences) => void;
 }
 
-const TOTAL_STEPS = 5;
+const TOTAL_STEPS = 6; // INCREASED FROM 5 TO 6
 const STEP_NAMES = [
   "Select Roles",
   "Salary Range",
   "Top Skills",
   "Culture & Work Type",
+  "Upload Resume", // NEW STEP NAME
   "Review & Submit",
 ];
 
 export const StepWizard: React.FC<StepWizardProps> = ({ onComplete }) => {
+  const authContext = useContext(AuthContext);
+  if (!authContext) {
+    throw new Error("StepWizard must be used within AuthProvider");
+  }
+
+  const { markWizardComplete } = authContext;
+
   const [state, setState] = useState<OnboardingState>({
     currentStep: 1,
     preferences: {
@@ -30,9 +41,10 @@ export const StepWizard: React.FC<StepWizardProps> = ({ onComplete }) => {
       culturePreferences: [],
       workType: "hybrid",
       experience: "mid",
+      // Resume data is optional initially
     },
     isCompleted: false,
-    completedSteps: [false, false, false, false, false],
+    completedSteps: [false, false, false, false, false, false], // Add extra false for 6th step
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -80,17 +92,19 @@ export const StepWizard: React.FC<StepWizardProps> = ({ onComplete }) => {
       markStepComplete(TOTAL_STEPS);
       setState((prev) => ({ ...prev, isCompleted: true }));
 
+      // Call the onComplete callback to save preferences in App
       if (onComplete) {
         onComplete(state.preferences);
       }
+
+      // Mark wizard as complete in auth context
+      await markWizardComplete();
     } catch (error) {
       console.error("Error submitting preferences:", error);
     } finally {
       setIsSubmitting(false);
     }
-  }, [state.preferences, onComplete, markStepComplete]);
-
-  
+  }, [state.preferences, onComplete, markStepComplete, markWizardComplete]);
 
   // Completion screen
   if (state.isCompleted) {
@@ -105,14 +119,9 @@ export const StepWizard: React.FC<StepWizardProps> = ({ onComplete }) => {
             We've personalized your job recommendations based on your
             preferences.
           </p>
-          <button
-            onClick={() => {
-              window.location.href = "/dashboard";
-            }}
-            className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all"
-          >
-            View Your Recommendations →
-          </button>
+          <p className="text-sm text-gray-500 mb-8">
+            Redirecting to your dashboard...
+          </p>
         </div>
       </div>
     );
@@ -132,13 +141,8 @@ export const StepWizard: React.FC<StepWizardProps> = ({ onComplete }) => {
           </p>
         </div>
 
-        {/* --- IMPROVED STEPPER SECTION START --- 
-           1. Removed flex-wrap to keep them on one line.
-           2. Used flex-1 for lines so they shrink on mobile.
-           3. Adjusted button sizes (w-8 vs w-10) for mobile.
-        */}
-        <div className="max-w-3xl mx-auto mb-8 sm:mb-12">
-          
+        {/* --- IMPROVED STEPPER SECTION --- */}
+        <div className="max-w-4xl mx-auto mb-8 sm:mb-12">
           {/* Numbered Steps */}
           <div className="flex justify-between items-center w-full">
             {STEP_NAMES.map((name, index) => {
@@ -151,7 +155,10 @@ export const StepWizard: React.FC<StepWizardProps> = ({ onComplete }) => {
                 <React.Fragment key={stepNum}>
                   {/* Step Bubble */}
                   <button
-                    onClick={() => goToStep(stepNum)}
+                    onClick={() => {
+                        // Allow user to jump back to completed steps
+                        if (isCompleted || isActive) goToStep(stepNum)
+                    }}
                     title={name}
                     className={`
                       relative z-10 flex items-center justify-center 
@@ -161,8 +168,8 @@ export const StepWizard: React.FC<StepWizardProps> = ({ onComplete }) => {
                         isActive
                           ? "bg-blue-600 text-white shadow-lg scale-110 ring-4 ring-blue-100"
                           : isCompleted
-                          ? "bg-green-500 text-white"
-                          : "bg-gray-200 text-gray-500 hover:bg-blue-400 hover:text-white"
+                          ? "bg-green-500 text-white cursor-pointer"
+                          : "bg-gray-200 text-gray-500"
                       }
                     `}
                   >
@@ -171,7 +178,7 @@ export const StepWizard: React.FC<StepWizardProps> = ({ onComplete }) => {
 
                   {/* Connecting Line (Only render if not the last item) */}
                   {stepNum < STEP_NAMES.length && (
-                    <div className="flex-1 h-1 mx-2 sm:mx-4 bg-gray-200 rounded">
+                    <div className="flex-1 h-1 mx-1 sm:mx-2 bg-gray-200 rounded">
                       <div
                         className={`h-full rounded transition-all duration-500 ${
                           stepNum < state.currentStep
@@ -187,14 +194,13 @@ export const StepWizard: React.FC<StepWizardProps> = ({ onComplete }) => {
             })}
           </div>
 
-          {/* Mobile Labels (Optional: Shows current step name below bubbles) */}
-          <div className="text-center mt-2 sm:hidden">
+          {/* Mobile Labels */}
+          <div className="text-center mt-4 sm:hidden">
             <span className="text-sm font-medium text-blue-600">
               {STEP_NAMES[state.currentStep - 1]}
             </span>
           </div>
         </div>
-        {/* --- IMPROVED STEPPER SECTION END --- */}
 
         {/* Step Content */}
         <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-8 min-h-[400px]">
@@ -243,7 +249,16 @@ export const StepWizard: React.FC<StepWizardProps> = ({ onComplete }) => {
             />
           )}
 
+          {/* NEW: Resume Step at Index 5 */}
           {state.currentStep === 5 && (
+            <Step_Resume
+              initialData={state.preferences.resumeData}
+              onNext={(data: UserPreferences['resumeData']) => updatePreferences({ resumeData: data })}
+              onBack={handleBack}
+            />
+          )}
+
+          {state.currentStep === 6 && (
             <Step5Review
               preferences={state.preferences}
               onSubmit={handleSubmit}

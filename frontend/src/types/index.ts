@@ -1,3 +1,5 @@
+// src/types/index.ts
+
 // User Preference Types
 export interface UserPreferences {
   selectedRoles: string[];
@@ -9,6 +11,18 @@ export interface UserPreferences {
   culturePreferences: CultureValue[];
   workType: WorkType;
   experience: ExperienceLevel;
+  // Resume Data Field
+  resumeData?: {
+    fileName: string;
+    fileUrl?: string;
+    uploadedAt: Date;
+    aiAnalysis?: {
+      matchedSkills: string[];
+      matchScore: number;
+      // NEW FIELD: Store extracted projects
+      projects?: string[]; 
+    };
+  };
 }
 
 export type ExperienceLevel = "entry" | "mid" | "senior" | "lead";
@@ -80,6 +94,8 @@ export interface Job {
   niceToHaveSkills: string[];
   postedDate: string;
   matchPercentage: number;
+  // --- ADDED THIS LINE TO FIX THE ERROR ---
+  matchingSkills?: string[]; 
 }
 
 // Stats Type
@@ -100,6 +116,9 @@ export interface User {
   avatar?: string;
   preferences?: UserPreferences;
   stats?: UserStats;
+  hasCompletedWizard?: boolean;
+  createdAt?: Date;
+  isNewUser?: boolean;
 }
 
 // API Response Types
@@ -108,4 +127,30 @@ export interface ApiResponse<T> {
   data?: T;
   error?: string;
   message?: string;
+}
+
+// Email Draft Type
+export interface EmailDraft {
+  subject: string;
+  body: string;
+}
+
+// Saved Job Draft Type (for Saved Jobs page)
+export interface SavedJobDraft {
+  id: string;
+  job: Job;
+  emailDraft: EmailDraft;
+  status: 'draft' | 'sent';
+  createdAt: Date;
+  sentAt?: Date;
+}
+
+// Add this new interface (keeping for backward compatibility)
+export interface SavedJob extends Job {
+  emailDraft?: {
+    subject: string;
+    body: string;
+  };
+  status: 'saved' | 'applied';
+  savedAt: Date;
 }
