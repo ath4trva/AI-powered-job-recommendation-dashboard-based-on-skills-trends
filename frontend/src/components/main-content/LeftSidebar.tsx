@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { User, Briefcase, Bell, Eye, TrendingUp, Settings } from 'lucide-react';
+import React, { useState } from "react";
+import { User, Briefcase, Bell, Eye, TrendingUp, Settings } from "lucide-react";
+import { AVAILABLE_SKILLS } from "../../data/skillsData";
+import type { UserPreferences } from "../../types";
 
-// Define the User Profile interface for type safety
 interface UserProfile {
   name: string;
   headline: string;
@@ -12,8 +13,16 @@ interface UserProfile {
   viewChange: number;
 }
 
-const LeftSidebar: React.FC = () => {
-  // Mock data - In a real app, this would be fetched from an API or Global State
+interface ActivityDay {
+  day: string;
+  active: boolean;
+}
+
+interface LeftSidebarProps {
+  userPreferences?: UserPreferences | null;
+}
+
+const LeftSidebar: React.FC<LeftSidebarProps> = ({ userPreferences }) => {
   const [user] = useState<UserProfile>({
     name: "John Doe",
     headline: "Senior Frontend Engineer",
@@ -23,26 +32,89 @@ const LeftSidebar: React.FC = () => {
     viewChange: 5.4,
   });
 
+  // Activity Heatmap Data (last 3 weeks)
+  const activityData: ActivityDay[][] = [
+    [
+      { day: "M", active: true },
+      { day: "T", active: true },
+      { day: "W", active: true },
+      { day: "T", active: false },
+      { day: "F", active: true },
+      { day: "S", active: false },
+      { day: "S", active: false },
+    ],
+    [
+      { day: "M", active: true },
+      { day: "T", active: true },
+      { day: "W", active: true },
+      { day: "T", active: true },
+      { day: "F", active: true },
+      { day: "S", active: false },
+      { day: "S", active: true },
+    ],
+    [
+      { day: "M", active: true },
+      { day: "T", active: true },
+      { day: "W", active: true },
+      { day: "T", active: false },
+      { day: "F", active: false },
+      { day: "S", active: false },
+      { day: "S", active: false },
+    ],
+  ];
+
+  const activeDaysThisMonth = 12;
+  const longestStreak = 8;
+
+  // Skill Progress Data - dynamically render from userPreferences
+  const skills = userPreferences?.topSkills
+    ? userPreferences.topSkills
+        .map((skillId) => {
+          const skillData = AVAILABLE_SKILLS.find(
+            (skill) => skill.id === skillId
+          );
+          return skillData
+            ? {
+                name: skillData.name,
+                level: 75, // Default level
+                trend: "neutral" as const,
+                change: "",
+              }
+            : null;
+        })
+        .filter((skill): skill is NonNullable<typeof skill> => skill !== null)
+    : [
+        { name: "React", level: 90, trend: "up" as const, change: "+5%" },
+        {
+          name: "TypeScript",
+          level: 75,
+          trend: "neutral" as const,
+          change: "",
+        },
+        { name: "Docker", level: 40, trend: "up" as const, change: "+15%" },
+      ];
+
   return (
     <aside className="w-full flex flex-col gap-4">
       {/* 1. Identity Section */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        {/* Decorative Banner */}
         <div className="h-16 bg-gradient-to-r from-blue-600 to-indigo-600"></div>
-        
+
         <div className="px-4 pb-4 text-center relative">
-          {/* Profile Picture Anchor */}
           <div className="relative -mt-10 mb-3 inline-block">
             <div className="w-20 h-20 rounded-full border-4 border-white bg-gray-100 flex items-center justify-center overflow-hidden shadow-sm">
-               {user.avatarUrl ? (
-                 <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover"/>
-               ) : (
-                 <User className="w-10 h-10 text-gray-400" />
-               )}
+              {user.avatarUrl ? (
+                <img
+                  src={user.avatarUrl}
+                  alt={user.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <User className="w-10 h-10 text-gray-400" />
+              )}
             </div>
           </div>
 
-          {/* Name & Headline */}
           <h2 className="text-lg font-bold text-gray-900 leading-tight hover:underline cursor-pointer">
             {user.name}
           </h2>
@@ -50,7 +122,6 @@ const LeftSidebar: React.FC = () => {
             {user.headline}
           </p>
 
-          {/* Availability Badge */}
           <div className="mt-4 flex justify-center">
             {user.isOpenToWork ? (
               <div className="group cursor-pointer flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-50 text-green-700 border border-green-200 transition-colors hover:bg-green-100">
@@ -66,15 +137,18 @@ const LeftSidebar: React.FC = () => {
 
           <hr className="my-5 border-gray-100" />
 
-          {/* Profile Completion Meter */}
           <div className="text-left">
             <div className="flex justify-between text-xs font-bold mb-1.5">
-              <span className="text-gray-600 uppercase tracking-tight">Profile Completion</span>
-              <span className="text-blue-600">{user.completionPercentage}%</span>
+              <span className="text-gray-600 uppercase tracking-tight">
+                Profile Completion
+              </span>
+              <span className="text-blue-600">
+                {user.completionPercentage}%
+              </span>
             </div>
             <div className="w-full bg-gray-100 rounded-full h-2.5 mb-2.5">
-              <div 
-                className="bg-blue-600 h-2.5 rounded-full transition-all duration-700 ease-out" 
+              <div
+                className="bg-blue-600 h-2.5 rounded-full transition-all duration-700 ease-out"
                 style={{ width: `${user.completionPercentage}%` }}
               ></div>
             </div>
@@ -85,19 +159,117 @@ const LeftSidebar: React.FC = () => {
         </div>
       </div>
 
-      {/* 2. Feedback Loop (Stats) */}
+      {/* 2. Activity Streak Heatmap */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Market Standing</h3>
-        
+        <div className="flex items-center gap-2 mb-4">
+          <span className="text-lg">🔥</span>
+          <h3 className="text-sm font-bold text-gray-900">
+            Your Activity Streak
+          </h3>
+        </div>
+
+        <div className="space-y-2 mb-4">
+          {activityData.map((week, weekIndex) => (
+            <div key={weekIndex} className="flex items-center gap-1.5">
+              {week.map((day, dayIndex) => (
+                <div
+                  key={dayIndex}
+                  className={`w-7 h-7 rounded flex items-center justify-center text-[10px] font-medium transition-all ${
+                    day.active
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-100 text-gray-400"
+                  }`}
+                  title={`${day.day} - ${day.active ? "Active" : "Inactive"}`}
+                >
+                  {dayIndex === 0 && day.day}
+                </div>
+              ))}
+              <span className="text-[10px] text-gray-400 ml-1">
+                Week {weekIndex + 1}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex items-center justify-between text-xs">
+          <div className="flex items-center gap-1">
+            <span className="text-lg">🎯</span>
+            <span className="text-gray-600">
+              <strong className="text-gray-900">{activeDaysThisMonth}</strong>{" "}
+              active days
+            </span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="text-lg">🏆</span>
+            <span className="text-gray-600">
+              <strong className="text-gray-900">{longestStreak}</strong> day
+              streak
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. Skill Stack with Progress */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+        <h3 className="text-sm font-bold text-gray-900 mb-4">Skill Stack</h3>
+
+        <div className="space-y-3">
+          {skills.map((skill, index) => (
+            <div key={index}>
+              <div className="flex justify-between items-center mb-1.5">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-semibold text-gray-700">
+                    {skill.name}
+                  </span>
+                  {skill.trend === "up" && (
+                    <span className="text-[10px] font-bold text-green-600 flex items-center gap-0.5">
+                      ↑ {skill.change}
+                    </span>
+                  )}
+                  {skill.trend === "neutral" && (
+                    <span className="text-[10px] text-gray-400">→</span>
+                  )}
+                </div>
+                <span className="text-xs font-bold text-gray-900">
+                  {skill.level}%
+                </span>
+              </div>
+              <div className="w-full bg-gray-100 rounded-full h-2">
+                <div
+                  className={`h-2 rounded-full transition-all duration-700 ${
+                    skill.trend === "up" ? "bg-green-500" : "bg-blue-500"
+                  }`}
+                  style={{ width: `${skill.level}%` }}
+                ></div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <button className="mt-4 text-xs font-semibold text-blue-600 hover:text-blue-700 hover:underline">
+          + Add new skill
+        </button>
+      </div>
+
+      {/* 4. Market Standing */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">
+          Market Standing
+        </h3>
+
         <div className="flex items-center justify-between group cursor-pointer">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-blue-50 rounded-lg group-hover:bg-blue-100 transition-colors">
-                <Eye className="w-4 h-4 text-blue-600" />
+              <Eye className="w-4 h-4 text-blue-600" />
             </div>
-            <span className="text-sm font-medium text-gray-700">Profile views</span>
+            <span className="text-sm font-medium text-gray-700">
+              Profile views
+            </span>
           </div>
           <div className="text-right">
-            <div className="text-sm font-bold text-gray-900">{user.profileViews}</div>
+            <div className="text-sm font-bold text-gray-900">
+              {user.profileViews}
+            </div>
             <div className="flex items-center gap-1 text-[10px] font-bold text-green-600">
               <TrendingUp className="w-3 h-3" />
               <span>{user.viewChange}%</span>
@@ -106,25 +278,27 @@ const LeftSidebar: React.FC = () => {
         </div>
       </div>
 
-      {/* 3. Quick Navigation Links */}
+      {/* 5. Quick Navigation Links */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <nav className="flex flex-col">
           <button className="flex items-center justify-between px-4 py-3.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-all border-l-4 border-transparent hover:border-blue-600 group">
             <div className="flex items-center gap-3">
-                <Briefcase className="w-4 h-4 text-gray-400 group-hover:text-blue-600" />
-                <span>Saved Jobs</span>
+              <Briefcase className="w-4 h-4 text-gray-400 group-hover:text-blue-600" />
+              <span>Saved Jobs</span>
             </div>
             <span className="text-xs text-gray-400 font-normal">12</span>
           </button>
-          
+
           <div className="h-px bg-gray-100 mx-4"></div>
-          
+
           <button className="flex items-center justify-between px-4 py-3.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-all border-l-4 border-transparent hover:border-blue-600 group">
             <div className="flex items-center gap-3">
-                <Bell className="w-4 h-4 text-gray-400 group-hover:text-blue-600" />
-                <span>Job Alerts</span>
+              <Bell className="w-4 h-4 text-gray-400 group-hover:text-blue-600" />
+              <span>Job Alerts</span>
             </div>
-            <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">3</span>
+            <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">
+              3
+            </span>
           </button>
 
           <div className="h-px bg-gray-100 mx-4"></div>

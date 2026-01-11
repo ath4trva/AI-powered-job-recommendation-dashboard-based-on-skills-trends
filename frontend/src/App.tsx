@@ -6,52 +6,59 @@ import Login from "./components/Auth/Login";
 import { StepWizard } from "./components/Onboarding/StepWizard";
 import Navbar from "./components/Nav/Navbar";
 import MainContent from "./components/main-content/MainContent";
-import Swipe from "./components/swipe/swipe";
+import Swipe from "./components/swipe/Swipe";
 
 // Types & Assets
-import type { UserPreferences } from "./types";
+import type { UserPreferences, Job } from "./types";
 import companyLogo from "./assets/Company name.png";
-import "./styles/colors.css"; 
-
-// Define Job Type locally (or import from types if you have it)
-export interface Job {
-  id: number;
-  title: string;
-  company: string;
-  location: string;
-  salary: string;
-  type: string;
-  matchScore: number;
-  skills: string[];
-  description: string;
-}
+import "./styles/colors.css";
 
 export default function App() {
   // --- State ---
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [hasOnboarded, setHasOnboarded] = useState<boolean>(false);
-  const [currentView, setCurrentView] = useState<'dashboard' | 'search'>('dashboard');
-  
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    return localStorage.getItem("isAuthenticated") === "true";
+  });
+  const [hasOnboarded, setHasOnboarded] = useState<boolean>(() => {
+    return localStorage.getItem("hasOnboarded") === "true";
+  });
+  const [userPreferences, setUserPreferences] =
+    useState<UserPreferences | null>(() => {
+      const stored = localStorage.getItem("userPreferences");
+      return stored ? JSON.parse(stored) : null;
+    });
+
   // NEW: State for Saved Jobs
   const [savedJobs, setSavedJobs] = useState<Job[]>([]);
+
+  // State for Swipe Mode
+  const [isSwiping, setIsSwiping] = useState<boolean>(false);
 
   // --- Handlers ---
   const handleLogin = () => {
     setIsAuthenticated(true);
     setHasOnboarded(false);
+    localStorage.setItem("isAuthenticated", "true");
+    localStorage.removeItem("hasOnboarded"); // Reset onboarding on login
   };
 
   const handleOnboardingComplete = (preferences: UserPreferences) => {
     console.log("User preferences:", preferences);
+    setUserPreferences(preferences);
     setHasOnboarded(true);
+    localStorage.setItem("hasOnboarded", "true");
+    localStorage.setItem("userPreferences", JSON.stringify(preferences));
   };
 
-  // NEW: Save Job Handler
+  const handleStartSwiping = () => {
+    setIsSwiping(true);
+  };
+
   const handleSaveJob = (job: Job) => {
-    // Avoid duplicates
-    if (!savedJobs.find(j => j.id === job.id)) {
-      setSavedJobs(prev => [...prev, job]);
-    }
+    setSavedJobs((prev) => [...prev, job]);
+  };
+
+  const handleExitSwipe = () => {
+    setIsSwiping(false);
   };
 
   // --- Render Logic ---
@@ -69,7 +76,10 @@ export default function App() {
   // 2. Logged In BUT No Preferences
   if (!hasOnboarded) {
     return (
-      <main className="relative w-full min-h-screen" style={{ backgroundColor: 'var(--color-background)' }}>
+      <main
+        className="relative w-full min-h-screen"
+        style={{ backgroundColor: "var(--color-background)" }}
+      >
         <Navbar companyLogoSrc={companyLogo} companyName="JobWiz" />
         <div className="pt-10">
           <StepWizard onComplete={handleOnboardingComplete} />
@@ -80,44 +90,22 @@ export default function App() {
 
   // 3. Logged In AND Onboarded
   return (
-    <main className="relative w-full min-h-screen" style={{ backgroundColor: 'var(--color-background)' }}>
+    <main
+      className="relative w-full min-h-screen"
+      style={{ backgroundColor: "var(--color-background)" }}
+    >
       <Navbar companyLogoSrc={companyLogo} companyName="JobWiz" />
-      
-      {/* Tab Navigation */}
-      <div className="w-full flex justify-center py-4 bg-white shadow-sm sticky top-0 z-50">
-        <div className="flex gap-4">
-          <button 
-            onClick={() => setCurrentView('dashboard')}
-            className={`px-4 py-2 rounded-full font-semibold transition-colors ${
-              currentView === 'dashboard' 
-                ? 'bg-primary text-white' 
-                : 'text-gray-500 hover:bg-gray-100'
-            }`}
-          >
-            Dashboard
-          </button>
-          <button 
-            onClick={() => setCurrentView('search')}
-            className={`px-4 py-2 rounded-full font-semibold transition-colors ${
-              currentView === 'search' 
-                ? 'bg-primary text-white' 
-                : 'text-gray-500 hover:bg-gray-100'
-            }`}
-          >
-            Find Jobs
-          </button>
-        </div>
-      </div>
 
       {/* View Content */}
-      <div className="container mx-auto px-4 py-6">
-        {currentView === 'dashboard' ? (
-          <MainContent 
-            savedJobs={savedJobs} 
-            onStartSwiping={() => setCurrentView('search')} 
-          />
+      <div className="w-full px-4 py-6">
+        {isSwiping ? (
+          <Swipe onSaveJob={handleSaveJob} onExitSwipe={handleExitSwipe} />
         ) : (
-          <Swipe onSaveJob={handleSaveJob} />
+          <MainContent
+            savedJobs={savedJobs}
+            onStartSwiping={handleStartSwiping}
+            userPreferences={userPreferences}
+          />
         )}
       </div>
     </main>
