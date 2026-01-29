@@ -1,0 +1,341 @@
+import React, { useState } from "react";
+import { User, Briefcase, Bell, TrendingUp, Settings, LogOut, Eye } from "lucide-react";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebaseConfig";
+import { AVAILABLE_SKILLS } from "../../data/skillsData";
+import type { UserPreferences } from "../../types";
+
+interface UserProfile {
+  name: string;
+  headline: string;
+  avatarUrl?: string;
+  completionPercentage: number;
+  isOpenToWork: boolean;
+  profileViews: number;
+  viewChange: number;
+}
+
+interface ActivityDay {
+  day: string;
+  active: boolean;
+}
+
+interface LeftSidebarProps {
+  userPreferences?: UserPreferences | null;
+  onViewSavedJobs?: () => void;
+}
+
+const LeftSidebar: React.FC<LeftSidebarProps> = ({ userPreferences, onViewSavedJobs }) => {
+  const [user] = useState<UserProfile>({
+    name: "John Doe",
+    headline: "Senior Frontend Engineer",
+    completionPercentage: 85,
+    isOpenToWork: true,
+    profileViews: 142,
+    viewChange: 5.4,
+  });
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      // Redirect to login page happens automatically when auth state changes in App.tsx
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
+
+  // Activity Heatmap Data (last 3 weeks)
+  const activityData: ActivityDay[][] = [
+    [
+      { day: "M", active: true },
+      { day: "T", active: true },
+      { day: "W", active: true },
+      { day: "T", active: false },
+      { day: "F", active: true },
+      { day: "S", active: false },
+      { day: "S", active: false },
+    ],
+    [
+      { day: "M", active: true },
+      { day: "T", active: true },
+      { day: "W", active: true },
+      { day: "T", active: true },
+      { day: "F", active: true },
+      { day: "S", active: false },
+      { day: "S", active: true },
+    ],
+    [
+      { day: "M", active: true },
+      { day: "T", active: true },
+      { day: "W", active: true },
+      { day: "T", active: false },
+      { day: "F", active: false },
+      { day: "S", active: false },
+      { day: "S", active: false },
+    ],
+  ];
+
+  const activeDaysThisMonth = 12;
+  const longestStreak = 8;
+
+  // Skill Progress Data - dynamically render from userPreferences
+  const skills = userPreferences?.topSkills
+    ? userPreferences.topSkills
+        .map((skillId) => {
+          const skillData = AVAILABLE_SKILLS.find(
+            (skill) => skill.id === skillId
+          );
+          return skillData
+            ? {
+                name: skillData.name,
+                level: 75, // Default level
+                trend: "neutral" as const,
+                change: "",
+              }
+            : null;
+        })
+        .filter((skill): skill is NonNullable<typeof skill> => skill !== null)
+    : [
+        { name: "React", level: 90, trend: "up" as const, change: "+5%" },
+        {
+          name: "TypeScript",
+          level: 75,
+          trend: "neutral" as const,
+          change: "",
+        },
+        { name: "Docker", level: 40, trend: "up" as const, change: "+15%" },
+      ];
+
+  return (
+    <aside className="w-full flex flex-col gap-4">
+      {/* 1. Identity Section */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="h-16 bg-gradient-to-r from-blue-600 to-indigo-600"></div>
+
+        <div className="px-4 pb-4 text-center relative">
+          <div className="relative -mt-10 mb-3 inline-block">
+            <div className="w-20 h-20 rounded-full border-4 border-white bg-gray-100 flex items-center justify-center overflow-hidden shadow-sm">
+              {user.avatarUrl ? (
+                <img
+                  src={user.avatarUrl}
+                  alt={user.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <User className="w-10 h-10 text-gray-400" />
+              )}
+            </div>
+          </div>
+
+          <h2 className="text-lg font-bold text-gray-900 leading-tight hover:underline cursor-pointer">
+            {user.name}
+          </h2>
+          <p className="text-sm text-gray-500 mt-1 leading-snug">
+            {user.headline}
+          </p>
+
+          <div className="mt-4 flex justify-center">
+            {user.isOpenToWork ? (
+              <div className="group cursor-pointer flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-50 text-green-700 border border-green-200 transition-colors hover:bg-green-100">
+                <span className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
+                Open to Work
+              </div>
+            ) : (
+              <div className="cursor-pointer flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-50 text-gray-600 border border-gray-200">
+                Casually Looking
+              </div>
+            )}
+          </div>
+
+          <hr className="my-5 border-gray-100" />
+
+          <div className="text-left">
+            <div className="flex justify-between text-xs font-bold mb-1.5">
+              <span className="text-gray-600 uppercase tracking-tight">
+                Profile Completion
+              </span>
+              <span className="text-blue-600">
+                {user.completionPercentage}%
+              </span>
+            </div>
+            <div className="w-full bg-gray-100 rounded-full h-2.5 mb-2.5">
+              <div
+                className="bg-blue-600 h-2.5 rounded-full transition-all duration-700 ease-out"
+                style={{ width: `${user.completionPercentage}%` }}
+              ></div>
+            </div>
+            <button className="text-xs font-semibold text-blue-600 hover:text-blue-700 hover:underline">
+              + Add a Skill to reach All-Star
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* 2. Activity Streak Heatmap */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+        <div className="flex items-center gap-2 mb-4">
+          <span className="text-lg">🔥</span>
+          <h3 className="text-sm font-bold text-gray-900">
+            Your Activity Streak
+          </h3>
+        </div>
+
+        <div className="space-y-2 mb-4">
+          {activityData.map((week, weekIndex) => (
+            <div key={weekIndex} className="flex items-center gap-1.5">
+              {week.map((day, dayIndex) => (
+                <div
+                  key={dayIndex}
+                  className={`w-7 h-7 rounded flex items-center justify-center text-[10px] font-medium transition-all ${
+                    day.active
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-100 text-gray-400"
+                  }`}
+                  title={`${day.day} - ${day.active ? "Active" : "Inactive"}`}
+                >
+                  {dayIndex === 0 && day.day}
+                </div>
+              ))}
+              <span className="text-[10px] text-gray-400 ml-1">
+                Week {weekIndex + 1}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex items-center justify-between text-xs">
+          <div className="flex items-center gap-1">
+            <span className="text-lg">🎯</span>
+            <span className="text-gray-600">
+              <strong className="text-gray-900">{activeDaysThisMonth}</strong>{" "}
+              active days
+            </span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="text-lg">🏆</span>
+            <span className="text-gray-600">
+              <strong className="text-gray-900">{longestStreak}</strong> day
+              streak
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. Skill Stack with Progress */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+        <h3 className="text-sm font-bold text-gray-900 mb-4">Skill Stack</h3>
+
+        <div className="space-y-3">
+          {skills.map((skill, index) => (
+            <div key={index}>
+              <div className="flex justify-between items-center mb-1.5">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-semibold text-gray-700">
+                    {skill.name}
+                  </span>
+                  {skill.trend === "up" && (
+                    <span className="text-[10px] font-bold text-green-600 flex items-center gap-0.5">
+                      ↑ {skill.change}
+                    </span>
+                  )}
+                  {skill.trend === "neutral" && (
+                    <span className="text-[10px] text-gray-400">→</span>
+                  )}
+                </div>
+                <span className="text-xs font-bold text-gray-900">
+                  {skill.level}%
+                </span>
+              </div>
+              <div className="w-full bg-gray-100 rounded-full h-2">
+                <div
+                  className={`h-2 rounded-full transition-all duration-700 ${
+                    skill.trend === "up" ? "bg-green-500" : "bg-blue-500"
+                  }`}
+                  style={{ width: `${skill.level}%` }}
+                ></div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <button className="mt-4 text-xs font-semibold text-blue-600 hover:text-blue-700 hover:underline">
+          + Add new skill
+        </button>
+      </div>
+
+      {/* 4. Market Standing */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">
+          Market Standing
+        </h3>
+
+        <div className="flex items-center justify-between group cursor-pointer">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-blue-50 rounded-lg group-hover:bg-blue-100 transition-colors">
+              <Eye className="w-4 h-4 text-blue-600" />
+            </div>
+            <span className="text-sm font-medium text-gray-700">
+              Profile views
+            </span>
+          </div>
+          <div className="text-right">
+            <div className="text-sm font-bold text-gray-900">
+              {user.profileViews}
+            </div>
+            <div className="flex items-center gap-1 text-[10px] font-bold text-green-600">
+              <TrendingUp className="w-3 h-3" />
+              <span>{user.viewChange}%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 5. Quick Navigation Links */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <nav className="flex flex-col">
+          <button 
+            onClick={onViewSavedJobs}
+            className="flex items-center justify-between px-4 py-3.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-all border-l-4 border-transparent hover:border-blue-600 group"
+          >
+            <div className="flex items-center gap-3">
+              <Briefcase className="w-4 h-4 text-gray-400 group-hover:text-blue-600" />
+              <span>Saved Jobs</span>
+            </div>
+            <span className="text-xs text-gray-400 font-normal">📋</span>
+          </button>
+
+          <div className="h-px bg-gray-100 mx-4"></div>
+
+          <button className="flex items-center justify-between px-4 py-3.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-all border-l-4 border-transparent hover:border-blue-600 group">
+            <div className="flex items-center gap-3">
+              <Bell className="w-4 h-4 text-gray-400 group-hover:text-blue-600" />
+              <span>Job Alerts</span>
+            </div>
+            <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">
+              3
+            </span>
+          </button>
+
+          <div className="h-px bg-gray-100 mx-4"></div>
+
+          <button className="flex items-center gap-3 px-4 py-3.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-all border-l-4 border-transparent hover:border-blue-600 group">
+            <Settings className="w-4 h-4 text-gray-400 group-hover:text-blue-600" />
+            <span>Preferences</span>
+          </button>
+
+          <div className="h-px bg-gray-100 mx-4"></div>
+
+          <button 
+            onClick={handleLogout}
+            className="flex items-center justify-center gap-2 mx-4 my-3 px-4 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg active:scale-95"
+          >
+            <LogOut className="w-5 h-5" />
+            <span>Logout</span>
+          </button>
+        </nav>
+      </div>
+    </aside>
+  );
+};
+
+export default LeftSidebar;

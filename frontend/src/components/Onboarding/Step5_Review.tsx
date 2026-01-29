@@ -100,7 +100,7 @@ export const Step5Review: React.FC<Step5ReviewProps> = ({
       </div>
 
       {/* Roles Review */}
-      <div className="bg-surface border-2 border-border rounded-lg p-6 mb-6">
+      <div className="bg-surface border-2 border-border rounded-lg p-4 sm:p-6 mb-4 sm:mb-6">
         <div className="flex items-center gap-2 mb-4">
           <span className="text-2xl">🎯</span>
           <h3 className="text-xl font-bold text-gray-900">Target Roles</h3>
@@ -118,7 +118,7 @@ export const Step5Review: React.FC<Step5ReviewProps> = ({
       </div>
 
       {/* Salary Review */}
-      <div className="bg-surface border-2 border-border rounded-lg p-6 mb-6">
+      <div className="bg-surface border-2 border-border rounded-lg p-4 sm:p-6 mb-4 sm:mb-6">
         <div className="flex items-center gap-2 mb-4">
           <span className="text-2xl">💰</span>
           <h3 className="text-xl font-bold text-gray-900">
@@ -137,7 +137,7 @@ export const Step5Review: React.FC<Step5ReviewProps> = ({
       </div>
 
       {/* Skills Review */}
-      <div className="bg-surface border-2 border-border rounded-lg p-6 mb-6">
+      <div className="bg-surface border-2 border-border rounded-lg p-4 sm:p-6 mb-4 sm:mb-6">
         <div className="flex items-center gap-2 mb-4">
           <span className="text-2xl">🛠️</span>
           <h3 className="text-xl font-bold text-gray-900">
@@ -157,7 +157,7 @@ export const Step5Review: React.FC<Step5ReviewProps> = ({
       </div>
 
       {/* Work Type Review */}
-      <div className="bg-surface border-2 border-border rounded-lg p-6 mb-6">
+      <div className="bg-surface border-2 border-border rounded-lg p-4 sm:p-6 mb-4 sm:mb-6">
         <div className="flex items-center gap-2 mb-4">
           <span className="text-2xl">
             {WORK_TYPE_ICONS[preferences.workType]}
@@ -177,7 +177,7 @@ export const Step5Review: React.FC<Step5ReviewProps> = ({
 
       {/* Culture Review */}
       {preferences.culturePreferences.length > 0 && (
-        <div className="bg-surface border-2 border-border rounded-lg p-6 mb-6">
+        <div className="bg-surface border-2 border-border rounded-lg p-4 sm:p-6 mb-4 sm:mb-6">
           <div className="flex items-center gap-2 mb-4">
             <span className="text-2xl">✨</span>
             <h3 className="text-xl font-bold text-gray-900">Culture Values</h3>

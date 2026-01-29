@@ -1,116 +1,109 @@
+// src/data/mockJobs.ts
 import type { Job } from "../types";
 
 export const mockJobs: Job[] = [
+  // --- FRONTEND JOBS ---
   {
     id: "1",
     title: "Senior Frontend Developer",
     company: "Tech Innovators Inc.",
     location: "San Francisco, CA",
     type: "hybrid",
-    salary: { min: 120000, max: 160000 },
-    description:
-      "Build scalable web applications with React and TypeScript. Lead UI/UX improvements.",
+    salary: { min: 140000, max: 180000 },
+    description: "Build scalable web applications with React and TypeScript.",
     requiredSkills: ["react", "typescript", "tailwind"],
     niceToHaveSkills: ["nextjs", "graphql"],
     postedDate: "2024-01-05",
-    matchPercentage: 92,
+    matchPercentage: 0, // Will be calculated dynamically
   },
+  
+  // --- BACKEND (PHP) JOBS ---
   {
     id: "2",
-    title: "Full Stack Developer",
+    title: "Backend Developer (Laravel)",
     company: "CloudBase Systems",
-    location: "New York, NY",
+    location: "Remote",
     type: "remote",
     salary: { min: 110000, max: 150000 },
-    description:
-      "Develop full-stack applications using Node.js and React. Work on microservices.",
-    requiredSkills: ["nodejs", "react", "javascript"],
+    description: "Scale our high-throughput PHP messaging infrastructure.",
+    requiredSkills: ["php", "laravel", "sql"],
     niceToHaveSkills: ["docker", "aws"],
     postedDate: "2024-01-03",
-    matchPercentage: 85,
+    matchPercentage: 0,
   },
+
+  // --- BACKEND (Python/Django) JOBS ---
   {
     id: "3",
-    title: "Backend Engineer (Python)",
+    title: "Python Django Engineer",
     company: "DataFlow Analytics",
     location: "Austin, TX",
     type: "remote",
-    salary: { min: 100000, max: 140000 },
-    description:
-      "Build high-performance backend systems with Python and FastAPI.",
-    requiredSkills: ["python", "fastapi", "sql"],
-    niceToHaveSkills: ["postgresql", "redis"],
+    salary: { min: 130000, max: 160000 },
+    description: "Build robust APIs for millions of users using Django.",
+    requiredSkills: ["python", "django", "postgresql"],
+    niceToHaveSkills: ["redis", "celery"],
     postedDate: "2024-01-04",
-    matchPercentage: 88,
+    matchPercentage: 0,
   },
+
+  // --- CLOUD / DEVOPS JOBS ---
   {
     id: "4",
-    title: "DevOps Engineer",
+    title: "Cloud Infrastructure Engineer",
     company: "CloudOps Pro",
     location: "Seattle, WA",
     type: "hybrid",
     salary: { min: 130000, max: 170000 },
-    description:
-      "Manage cloud infrastructure, CI/CD pipelines, and containerization.",
-    requiredSkills: ["docker", "kubernetes", "aws"],
-    niceToHaveSkills: ["ci-cd", "terraform"],
+    description: "Manage our global Google Cloud fleet and Kubernetes clusters.",
+    requiredSkills: ["gcp", "kubernetes", "docker"], // Using "gcp" to match ID
+    niceToHaveSkills: ["terraform", "go"],
     postedDate: "2024-01-02",
-    matchPercentage: 90,
+    matchPercentage: 0,
   },
+
+  // --- FULL STACK JOBS ---
   {
     id: "5",
-    title: "Data Engineer",
-    company: "BigData Inc.",
+    title: "Full Stack Developer",
+    company: "StartUp Rocket",
     location: "Boston, MA",
     type: "onsite",
     salary: { min: 115000, max: 155000 },
-    description:
-      "Design and maintain data pipelines. Work with Spark and Airflow.",
-    requiredSkills: ["sql", "spark", "airflow"],
-    niceToHaveSkills: ["python", "snowflake"],
+    description: "Wear many hats in a fast-paced environment. Node & React.",
+    requiredSkills: ["nodejs", "react", "mongodb"],
+    niceToHaveSkills: ["aws"],
     postedDate: "2024-01-01",
-    matchPercentage: 86,
+    matchPercentage: 0,
   },
+
+  // --- AI / ML JOBS ---
   {
     id: "6",
     title: "Machine Learning Engineer",
     company: "AI Ventures",
     location: "Mountain View, CA",
     type: "hybrid",
-    salary: { min: 140000, max: 190000 },
-    description:
-      "Develop ML models using TensorFlow and PyTorch. Deploy to production.",
+    salary: { min: 150000, max: 200000 },
+    description: "Develop ML models using TensorFlow and PyTorch.",
     requiredSkills: ["python", "tensorflow", "pytorch"],
     niceToHaveSkills: ["nlp", "cv"],
     postedDate: "2024-01-04",
-    matchPercentage: 87,
+    matchPercentage: 0,
   },
+
+  // --- QA JOBS ---
   {
     id: "7",
     title: "QA Automation Engineer",
     company: "Quality First Labs",
     location: "Chicago, IL",
     type: "remote",
-    salary: { min: 85000, max: 120000 },
-    description:
-      "Create automation tests and frameworks. Ensure software quality.",
-    requiredSkills: ["testing", "javascript", "python"],
-    niceToHaveSkills: ["ci-cd", "docker"],
-    postedDate: "2024-01-03",
-    matchPercentage: 82,
-  },
-  {
-    id: "8",
-    title: "UX/UI Designer",
-    company: "Design Hub Studio",
-    location: "Los Angeles, CA",
-    type: "hybrid",
     salary: { min: 90000, max: 130000 },
-    description:
-      "Design beautiful, user-centric interfaces. Create design systems.",
-    requiredSkills: ["figma", "ux", "ui"],
-    niceToHaveSkills: ["prototyping"],
-    postedDate: "2024-01-05",
-    matchPercentage: 84,
+    description: "Create automation tests and frameworks.",
+    requiredSkills: ["testing", "javascript", "python"],
+    niceToHaveSkills: ["ci-cd"],
+    postedDate: "2024-01-03",
+    matchPercentage: 0,
   },
 ];

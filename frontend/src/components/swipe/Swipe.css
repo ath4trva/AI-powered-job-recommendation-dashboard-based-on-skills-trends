@@ -1,0 +1,191 @@
+/* src/components/swipe/Swipe.css */
+
+/* Import your global colors */
+@import '../../styles/colors.css';
+
+.swipe-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: var(--color-background); 
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.header-placeholder {
+  position: absolute; 
+  top: 20px; 
+  width: 100%; 
+  text-align: center; 
+  z-index: 0;
+}
+
+.header-placeholder h3 {
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.card-stack-wrapper {
+  width: 100%;
+  max-width: 400px;
+  height: 600px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.empty-state {
+  text-align: center; 
+  color: var(--color-text-primary);
+}
+
+.swipe-card {
+  position: absolute;
+  width: 90%;
+  height: 100%;
+  background-color: var(--color-surface);
+  border-radius: 20px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  cursor: grab;
+  /* Crucial for stacking */
+  transform-origin: top center; 
+}
+
+.swipe-card:active {
+  cursor: grabbing;
+}
+
+.card-header {
+  height: 150px;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  padding: 20px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.match-badge {
+  background-color: var(--color-success);
+  color: white;
+  padding: 5px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  align-self: flex-start;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.card-body {
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.company-name {
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.job-title {
+  color: var(--color-text-primary);
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--color-text-secondary);
+}
+
+.job-desc {
+  font-size: 0.9rem; 
+  color: var(--color-text-secondary); 
+  line-height: 1.4;
+}
+
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.tag {
+  background-color: var(--color-primary-lighter);
+  color: var(--color-primary-dark);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.card-footer {
+  margin-top: auto;
+  padding: 15px 20px;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
+
+.salary {
+  font-weight: bold;
+  color: var(--color-success);
+}
+
+.controls {
+  margin-top: 30px;
+  display: flex;
+  gap: 20px;
+  z-index: 10;
+}
+
+.control-btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.control-btn:hover {
+  transform: scale(1.1);
+}
+
+.btn-reject {
+  background-color: var(--color-surface);
+  color: var(--color-error);
+  border: 2px solid var(--color-error);
+}
+
+.btn-accept {
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+}
